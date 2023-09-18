@@ -126,8 +126,12 @@
                         }
                         player = await createYouTubePlayer(videoId);
                         const videoDuration = player.getDuration();
-                        const startTime = Math.max(0, videoDuration - convertTime(minutesValue, secondsValue));
-                        await seekToTime(player, startTime);
+                        const inputConverted = convertTime(minutesValue, secondsValue)
+                        
+                        if (inputConverted < videoDuration) {
+                            const startTime = Math.max(0, videoDuration - inputConverted);
+                            await seekToTime(player, startTime);
+                        }
 
                         intervalId = setInterval(() => {
                             if (minutesValue === 0 && secondsValue === 0) {
@@ -142,6 +146,7 @@
                                 secondsValue--;
                             }
 
+                            if(videoDuration === convertTime(minutesValue, secondsValue)) player.playVideo();
                             updateCountdownDisplay(minutesValue, secondsValue);
                         }, 1000);
                     } catch (error) {
