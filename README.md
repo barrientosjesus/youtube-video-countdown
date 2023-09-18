@@ -39,6 +39,8 @@ A small tool for creating a countdown that also starts a video at the remaining 
 2. Set your Minutes and Seconds
  
 3. Press start to start the countdown.
+
+**If the countdown is longer than the video, it will countdown and start playing when it reaches the duration of the video**
  
 </details>
 
