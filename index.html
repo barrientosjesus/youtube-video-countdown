@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Countdown</title>
+    <style>
+        body {
+            font-family: Helvetica;
+            font-weight: lighter;
+            font-size: 20px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #333;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #minutes,
+        #seconds {
+            width: 4rem;
+            height: 4rem;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        #countdown {
+            font-size: 10rem;
+        }
+    </style>
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div id="countdown">00:00</div>
+        <div id="player"></div>
+        <br>
+        <input type="text" id="videoUrlInput" placeholder="Enter YouTube Link">
+        <br>
+        <div>
+            <small>Enter MM:SS Countdown</small>
+        </div>
+        <div>
+            <input type="number" name="minutes" id="minutes" value="00">
+            &nbsp;:&nbsp;
+            <input type="number" name="seconds" id="seconds" value="00">
+        </div>
+        <br>
+        <button id="startCountdown">Start</button>
+    </div>
+    <script>
+        let intervalId;
+        let player;
+
+        function createYouTubePlayer(videoId) {
+            return new Promise((resolve, reject) => {
+                player = new YT.Player('player', {
+                    height: '560',
+                    width: '940',
+                    videoId: videoId,
+                    events: {
+                        'onReady': (event) => {
+                            resolve(event.target);
+                        },
+                        'onError': (event) => {
+                            reject(event.data);
+                        },
+                    }
+                });
+            });
+        }
+
+        function seekToTime(player, startTime) {
+            return new Promise((resolve, reject) => {
+                player.seekTo(startTime);
+                resolve();
+            });
+        }
+
+        function updateCountdownDisplay(minutesValue, secondsValue) {
+            document.getElementById('countdown').textContent = `${minutesValue.toString().padStart(2, '0')}:${secondsValue.toString().padStart(2, '0')}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const startCountdown = document.getElementById('startCountdown');
+            const minutes = document.getElementById('minutes');
+            const seconds = document.getElementById('seconds');
+            const countdownEl = document.getElementById('countdown');
+            let minutesValue, secondsValue;
+
+            startCountdown.addEventListener('click', async () => {
+                // Reset the countdown and clear existing interval
+                clearInterval(intervalId);
+                countdownEl.textContent = '00:00';
+
+                minutesValue = parseInt(minutes.value);
+                secondsValue = parseInt(seconds.value);
+
+                if (isNaN(minutesValue) || isNaN(secondsValue)) {
+                    alert('Please enter valid minutes and seconds.');
+                    return;
+                }
+
+                const videoUrlInput = document.getElementById('videoUrlInput');
+                const videoUrl = videoUrlInput.value;
+                const videoId = getVideoIdFromUrl(videoUrl);
+
+                if (videoId) {
+                    try {
+                        if (player) {
+                            // If a player instance exists, destroy it first
+                            player.destroy();
+                        }
+                        player = await createYouTubePlayer(videoId);
+                        const videoDuration = player.getDuration();
+                        const startTime = Math.max(0, videoDuration - convertTime(minutesValue, secondsValue));
+                        await seekToTime(player, startTime);
+
+                        intervalId = setInterval(() => {
+                            if (minutesValue === 0 && secondsValue === 0) {
+                                clearInterval(intervalId);
+                                return;
+                            }
+
+                            if (secondsValue === 0) {
+                                minutesValue--;
+                                secondsValue = 59;
+                            } else {
+                                secondsValue--;
+                            }
+
+                            updateCountdownDisplay(minutesValue, secondsValue);
+                        }, 1000);
+                    } catch (error) {
+                        alert(`Error: ${error}`);
+                    }
+                } else {
+                    alert('Invalid YouTube URL. Please enter a valid YouTube video URL.');
+                }
+            });
+
+            function getVideoIdFromUrl(url) {
+                const match = url.match(/[?&]v=([^?&]+)/);
+                return match ? match[1] : null;
+            }
+
+            function convertTime(min, secs) {
+                return min * 60 + secs;
+            }
+        });
+    </script>
+</body>
+
+</html>
