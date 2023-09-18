@@ -2,15 +2,15 @@
    
 # YouTube Video Countdown
 **Created by [Jesus Barrientos](https://www.linkedin.com/in/barrientosjesus/)**
-#### [CLICK TO USE](https://chueyb.github.io/youtube-video-countdown/) 
+#### [CLICK TO USE](https://barrientosjesus.github.io/youtube-video-countdown/) 
 
 </div>
 
 <div align="center" id="socialbuttons">
 
-  ![Stars](https://img.shields.io/github/stars/chueyb/youtube-video-countdown?style=social)
-  ![](https://visitor-badge.laobi.icu/badge?page_id=chueyb.youtube-video-countdown)
-  ![Forks](https://img.shields.io/github/forks/chueyb/youtube-video-countdown?style=social)
+  ![Stars](https://img.shields.io/github/stars/barrientosjesus/youtube-video-countdown?style=social)
+  ![](https://visitor-badge.laobi.icu/badge?page_id=barrientosjesus.youtube-video-countdown)
+  ![Forks](https://img.shields.io/github/forks/barrientosjesus/youtube-video-countdown?style=social)
   <br>
   ![Version](https://img.shields.io/badge/version-1.0-black)
 
